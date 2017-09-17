@@ -1,5 +1,6 @@
 package com.example.mqbc.mapbasics;
 
+import com.example.mqbc.simplemap.R;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
