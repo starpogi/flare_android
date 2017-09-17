@@ -47,6 +47,7 @@ import com.mapquest.mapping.constants.Style;
 import com.mapquest.mapping.maps.MapView;
 import com.mapquest.mapping.maps.OnMapReadyCallback;
 import com.mapquest.mapping.maps.MapboxMap;
+import com.mapbox.mapboxsdk.MapboxAccountManager;
 
 import com.example.flare.microphone.MicrophoneActivity;
 import android.util.Log;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private SensorManager mSensorManager;
     private Sensor mSensorOrientation;
     private float mCurrentDegree = 180f;
+    private boolean mHasLoadedMap = false;
     private boolean mGatherOrientationSensorData = true;
 
     // Speech to Text
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MapQuestAccountManager.start(getApplicationContext());
         setContentView(R.layout.activity_main);
 
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
@@ -89,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
-        MapQuestAccountManager.start(getApplicationContext());
         mMapView = (MapView) findViewById(R.id.mapquestMapView);
         mMapView.onCreate(savedInstanceState);
         mLocationRequest = createLocationRequest();
@@ -145,13 +148,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         if(mHeldDown) {
                             if(motionEvent.getActionMasked() == motionEvent.ACTION_UP) {
                                 mHeldDown = false;
-
-                                MediaPlayer beepPlayer = MediaPlayer.create(MainActivity.this, R.raw.end);
-                                beepPlayer.start();
-                                while(beepPlayer.isPlaying()) {}
-                                beepPlayer.stop();
-                                beepPlayer.release();
-
                                 mViewSwitcher.showPrevious();
                                 return true;
                             }
@@ -196,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
+        mHasLoadedMap = true;
     }
 
     @Override
@@ -277,10 +274,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(mSensorOrientation != null) {
-            if(mGatherOrientationSensorData) {
-                mCurrentDegree = Math.round(event.values[0]);
-                updateCamera();
+        if(mHasLoadedMap) {
+            if (mSensorOrientation != null) {
+                if (mGatherOrientationSensorData) {
+                    mCurrentDegree = Math.round(event.values[0]);
+                    updateCamera();
+                }
             }
         }
     }
