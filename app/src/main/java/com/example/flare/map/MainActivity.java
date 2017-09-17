@@ -35,6 +35,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -122,8 +123,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                                    getString(R.string.speech_prompt));
+                            intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+                            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, new Long(0));
+                            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(1));
+                            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(1));
+
                             try {
                                 startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
                             } catch (ActivityNotFoundException a) {
@@ -169,6 +173,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                    // TODO: Send message here!
+                    // TODO: Do some fancy schamcy stuff
+                    mMarkerOptions = new MarkerOptions()
+                            .position(mLatLang)
+                            .title(result.get(0));
+                    Marker marker = mMap.addMarker(mMarkerOptions);
+                    marker.showInfoWindow(mMap, mMapView);
+
                     Toast.makeText(this, result.get(0), Toast.LENGTH_LONG).show();
                 }
                 break;
