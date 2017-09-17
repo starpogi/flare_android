@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Flare</string>
+    <string name="app_name_primary">Flare</string>
+    <string name="title_activity_microphone">Microphone</string>
+    <string name="speech_prompt">Say something&#8230;</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
+</resources>

@@ -11,12 +11,24 @@
     android:paddingTop="0px"
     tools:context="com.example.flare.map.MainActivity">
 
-    <!-- added for MapQuest map - add YOUR Application Key here -->
-    <com.mapquest.mapping.maps.MapView
-        app:mapbox_myLocation="true"
-        android:id="@+id/mapquestMapView"
-        app:mapquest_app_key="UShjaMayAC4UkuBJ5nu5rqFuraxzEOQU"
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="wrap_content" >
+
+        <!-- added for MapQuest map - add YOUR Application Key here -->
+        <com.mapquest.mapping.maps.MapView
+            app:mapbox_myLocation="true"
+            android:id="@+id/mapquestMapView"
+            app:mapquest_app_key="UShjaMayAC4UkuBJ5nu5rqFuraxzEOQU"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <View
+            android:id="@+id/talkOverView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_overlay" />
+    </ViewSwitcher>
 </RelativeLayout>

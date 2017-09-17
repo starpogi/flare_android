@@ -26,5 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.flare.microphone.MicrophoneActivity"
+            android:label="@string/title_activity_microphone"
+            android:theme="@style/Theme.Transparent">
+
+        </activity>
     </application>
+
 </manifest>
