@@ -3,7 +3,6 @@ package com.example.flare.map;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Build;
-import android.os.Environment;
 import android.app.AlertDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -26,13 +25,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.speech.RecognizerIntent;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Locale;
-import java.io.IOException;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -69,11 +65,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private float mCurrentDegree = 180f;
     private boolean mGatherOrientationSensorData = true;
 
-    // Audio Recorder
-    private MediaRecorder mMediaRecorder;
-    private MediaPlayer mMediaPlayer;
-    private String mMediaSavePath;
-
     // Speech to Text
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
@@ -81,15 +72,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Icon mPositionIcon;
     private ViewSwitcher mViewSwitcher;
 
-    private Random mRandom;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
-        // Declare in and out animations and load them using AnimationUtils class
         Animation in = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
         Animation out = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
 
@@ -118,22 +106,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     } else {
                         checkLocationPermission();
                     }
-
-                    mRandom = new Random();
-                    mMediaSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
-                            createRandomAudioFileName(5) + "Transmission.3gp";
-
-                    if (ContextCompat.checkSelfPermission(MainActivity.this,
-                            Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                        buildMediaRecorder();
-                    } else {
-                        checkAudioPermissions();
-                    }
-
-                    if (ContextCompat.checkSelfPermission(MainActivity.this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        checkWritePermissions();
-                    }
                 }
                 else {
                     buildGoogleApiClient();
@@ -159,20 +131,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                         getString(R.string.speech_not_supported),
                                         Toast.LENGTH_SHORT).show();
                             }
-
-//                            try {
-//                                mMediaRecorder.prepare();
-//                                mMediaRecorder.start();
-//                            }
-//                            catch (IllegalStateException e) {
-//                                // TODO Auto-generated catch block
-//                                e.printStackTrace();
-//                            }
-//                            catch (IOException e) {
-//                                // TODO Auto-generated catch block
-//                                e.printStackTrace();
-//                            }
-
                         }
                     }
                 });
@@ -183,32 +141,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         if(mHeldDown) {
                             if(motionEvent.getActionMasked() == motionEvent.ACTION_UP) {
                                 mHeldDown = false;
-//                                mMediaRecorder.stop();
-//
-//                                mMediaPlayer = new MediaPlayer();
-//                                try {
-//                                    mMediaPlayer.setDataSource(mMediaSavePath);
-//                                    mMediaPlayer.prepare();
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                                mMediaPlayer.start();
-//
-//                                while(mMediaPlayer.isPlaying()) {
-//                                    Log.d("com.example.flare.play", "" + mMediaPlayer.getCurrentPosition());
-//                                }
-//
-//                                mMediaPlayer.stop();
-//                                mMediaPlayer.release();
 
                                 MediaPlayer beepPlayer = MediaPlayer.create(MainActivity.this, R.raw.end);
                                 beepPlayer.start();
                                 while(beepPlayer.isPlaying()) {}
                                 beepPlayer.stop();
                                 beepPlayer.release();
-
-                                buildMediaRecorder();
 
                                 mViewSwitcher.showPrevious();
                                 return true;
@@ -360,27 +298,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Toast.makeText(this, "You may experience a lag, but service will resume shortly.", Toast.LENGTH_LONG).show();
     }
 
-    public void buildMediaRecorder(){
-        mMediaRecorder = new MediaRecorder();
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mMediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        mMediaRecorder.setOutputFile(mMediaSavePath);
-    }
-
-    public String createRandomAudioFileName(int string){
-        StringBuilder stringBuilder = new StringBuilder(string);
-        int i = 0;
-
-        while(i < string ) {
-            stringBuilder.append("0123456789ABCDEFG".
-                    charAt(mRandom.nextInt("0123456789ABCDEFG".length())));
-
-            i++;
-        }
-        return stringBuilder.toString();
-    }
-
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -416,84 +333,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                 Manifest.permission.ACCESS_FINE_LOCATION
                         },
                         MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-        }
-    }
-
-    public static final int MY_PERMISSIONS_WRITE_EX_STORAGE = 97;
-    private void checkWritePermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(this)
-                        .setTitle("Storing to External Storage Permission Needed")
-                        .setMessage("This app needs the store audio files for processing.")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        MY_PERMISSIONS_WRITE_EX_STORAGE);
-                            }
-                        })
-                        .create()
-                        .show();
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        },
-                        MY_PERMISSIONS_WRITE_EX_STORAGE);
-            }
-        }
-    }
-
-    public static final int MY_PERMISSIONS_AUDIO = 98;
-    private void checkAudioPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.RECORD_AUDIO)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(this)
-                        .setTitle("Recording Audio Permission Required")
-                        .setMessage("This app needs permission to record audio only when requested.")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.RECORD_AUDIO},
-                                        MY_PERMISSIONS_AUDIO);
-                            }
-                        })
-                        .create()
-                        .show();
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{
-                                Manifest.permission.RECORD_AUDIO
-                        },
-                        MY_PERMISSIONS_AUDIO);
             }
         }
     }
@@ -541,40 +380,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
                 else {
                     Toast.makeText(this, "You will need permissions to pinpoint your location.", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-            case MY_PERMISSIONS_AUDIO: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-
-                        if (mMediaRecorder == null) {
-                            buildMediaRecorder();
-                        }
-                    }
-
-                }
-                else {
-                    Toast.makeText(this, "You will need permissions to record audio.", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-            case MY_PERMISSIONS_WRITE_EX_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-//                        if (mMediaPlayer == null) {
-//                            buildMediaRecorder();
-//                        }
-                    }
-
-                }
-                else {
-                    Toast.makeText(this, "You will need permissions to store files.", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
