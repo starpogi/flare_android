@@ -22,12 +22,26 @@
             android:id="@+id/mapquestMapView"
             app:mapquest_app_key="I060uepK2SGilU5izaBXw5qiFYAypooa"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/centerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:clickable="true"
+                app:backgroundTint="@color/mapbox_blue"
+                android:background="@color/mapbox_blue"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_menu_mylocation" />
+        </com.mapquest.mapping.maps.MapView>
 
         <View
             android:id="@+id/talkOverView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black_overlay" />
+            android:background="@color/red_overlay" />
     </ViewSwitcher>
 </RelativeLayout>
