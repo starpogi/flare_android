@@ -5,14 +5,16 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.google.gms:google-services:3.1.0'
     }
 }
 allprojects {
     repositories {
         jcenter()
 
-        // added for MapQuest map
-        maven { url 'http://artifactory.cloud.mapquest.com/artifactory/et-android-binaries' }
+        maven {
+            url "https://maven.google.com" // Google's Maven repository
+        }
     }
 }
 task clean(type: Delete) {
