@@ -9,6 +9,6 @@ android:paddingBottom="0px"
 android:paddingLeft="0px"
 android:paddingRight="0px"
 android:paddingTop="0px"
-tools:context="com.example.flare.microphone.MicrophoneActivity">
+tools:context="com.flare.microphone.MicrophoneActivity">
 
 </RelativeLayout>

@@ -1,10 +1,10 @@
-package com.example.flare.apihook;
+package com.flare.apihook;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import com.example.flare.map.R;
+import com.flare.main.R;
 
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;

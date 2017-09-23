@@ -1,10 +1,10 @@
-package com.example.flare.microphone;
+package com.flare.microphone;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
-import com.example.flare.map.R;
+import com.flare.main.R;
 
 import android.util.Log;
 

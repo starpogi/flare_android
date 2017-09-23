@@ -1,10 +1,10 @@
-package com.example.flare.broadcasts;
+package com.flare.broadcasts;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.flare.map.MainActivity;
+import com.flare.main.MainActivity;
 
 public class LocationReceiver extends BroadcastReceiver {
 

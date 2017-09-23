@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flare.map">
+    package="com.flare.main">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,14 +31,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.flare.microphone.MicrophoneActivity"
+            android:name="com.flare.microphone.MicrophoneActivity"
             android:label="@string/title_activity_microphone"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent" />
 
-        <service
-            android:name="com.example.flare.broadcasts.Location"
+        <receiver
+            android:name="com.flare.broadcasts.LocationReceiver"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
     </application>
 
 </manifest>
