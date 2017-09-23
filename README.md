@@ -2,6 +2,8 @@
 
 Flare is proof-of-concept work that will combine blockchain technology and wireless mesh network.
 
+![Flare Demo](https://giphy.com/gifs/B1Jz2bd6LGjFC)
+
 ### Milestones
 - Migrate from MapQuest API to Google Maps API
 - Restructure Main Activity to Fragments and Activities
