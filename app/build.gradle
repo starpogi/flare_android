@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion '26.0.1'
     defaultConfig {
-        applicationId "com.example.mqbc.simplemap"
+        applicationId "com.flare"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
